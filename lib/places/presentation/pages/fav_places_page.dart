@@ -71,11 +71,7 @@ class _FavoritePlacesPageState extends State<FavoritePlacesPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => NewPlacePage(
-                        latLng: LatLng(37.43296265331129, -122.08832357078792),
-                      )));
+              context, MaterialPageRoute(builder: (context) => NewPlacePage()));
         },
         child: Icon(
           Icons.add,

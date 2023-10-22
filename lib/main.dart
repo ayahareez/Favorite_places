@@ -20,7 +20,7 @@ void main() {
           supportedLocales: [Locale('en'), Locale('ar')],
           path: 'assets/translations',
           fallbackLocale: Locale('en', 'ar'),
-          startLocale: Locale('ar'),
+          startLocale: Locale('en'),
           child: MyApp())));
 }
 

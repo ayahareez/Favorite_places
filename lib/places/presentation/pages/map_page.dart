@@ -75,15 +75,24 @@ class MapSampleState extends State<MapSample> {
             markers: markers,
           ),
           ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context, latLngg);
-              },
-              child: Row(
-                children: [
-                  Icon(Icons.save),
-                  Text('save'),
-                ],
-              ))
+            onPressed: () {
+              Navigator.pop(context, latLngg);
+            },
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.save,
+                  color: Color(0xfff0a6ca),
+                ),
+                Text(
+                  'save',
+                  style: TextStyle(color: Color(0xfff0a6ca), fontSize: 16),
+                ),
+              ],
+            ),
+            style: ElevatedButton.styleFrom(backgroundColor: Color(0xff2d232e)),
+          )
         ],
       ),
     );

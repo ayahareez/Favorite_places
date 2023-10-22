@@ -12,9 +12,8 @@ import 'package:image_picker/image_picker.dart';
 
 //UbuntuCondensed-Regular
 class NewPlacePage extends StatefulWidget {
-  final LatLng latLng;
 
-  const NewPlacePage({super.key, required this.latLng});
+  const NewPlacePage({super.key});
   @override
   State<NewPlacePage> createState() => _NewPlacePageState();
 }
@@ -130,14 +129,13 @@ class _NewPlacePageState extends State<NewPlacePage> {
                             Icon(Icons.map, color: Color(0xfff0a6ca)),
                             TextButton(
                                 onPressed: () async {
-                                  placemarks = await placemarkFromCoordinates(
-                                      widget.latLng.latitude,
-                                      widget.latLng.longitude);
                                   print(placemarks);
-                                  Navigator.push(
+                                  LatLng latLong = await Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => MapSample()));
+                                  placemarks = await placemarkFromCoordinates(
+                                      latLong.latitude, latLong.longitude);
                                 },
                                 child: Text(
                                   'Select On map ',
