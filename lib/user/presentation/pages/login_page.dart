@@ -34,6 +34,7 @@ class LoginPage extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 40.0,
                           fontWeight: FontWeight.bold,
+                          fontFamily: 'UbuntuCondensed-Regular',
                         ),
                       ),
                       SizedBox(

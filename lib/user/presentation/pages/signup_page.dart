@@ -127,7 +127,11 @@ class SignUpPage extends StatelessWidget {
                       },
                       child: Text(
                         'Sign Up',
-                        style: TextStyle(color: Colors.white, fontSize: 18),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontFamily: 'UbuntuCondensed-Regular',
+                        ),
                       ),
                       style: ElevatedButton.styleFrom(
                           backgroundColor: Color(0xfffb6f92)),
