@@ -34,6 +34,16 @@ class MapSampleState extends State<MapSample> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Pick Your Location'),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.pop(context, latLngg);
+              },
+              icon: Icon(Icons.save))
+        ],
+      ),
       body: Stack(
         alignment: Alignment.bottomCenter,
         children: [
@@ -68,7 +78,12 @@ class MapSampleState extends State<MapSample> {
               onPressed: () {
                 Navigator.pop(context, latLngg);
               },
-              child: Text('get the location'))
+              child: Row(
+                children: [
+                  Icon(Icons.save),
+                  Text('save'),
+                ],
+              ))
         ],
       ),
     );

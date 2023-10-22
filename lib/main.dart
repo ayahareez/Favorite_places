@@ -2,7 +2,7 @@ import 'dart:collection';
 
 import 'package:favorite_places/places/presentation/bloc/place_bloc.dart';
 import 'package:favorite_places/places/presentation/pages/new_place_page.dart';
-import 'package:favorite_places/places/presentation/pages/test.dart';
+import 'package:favorite_places/places/presentation/pages/map_page.dart';
 import 'package:favorite_places/user/presentation/bloc/user_bloc.dart';
 import 'package:favorite_places/user/presentation/pages/login_page.dart';
 import 'package:flutter/material.dart';
@@ -43,7 +43,7 @@ class _MyAppState extends State<MyApp> {
               backgroundColor: Color(0xff212529),
               foregroundColor: Color(0xffedede9)),
           colorScheme: ColorScheme.fromSeed(
-              seedColor: Colors.deepPurple, background: Color(0xff6d6875)),
+              seedColor: Colors.deepPurple, background: Color(0xff565264)),
           useMaterial3: true,
         ),
         home: LoginPage());

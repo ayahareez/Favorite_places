@@ -16,6 +16,12 @@ class FavoritePlacesPage extends StatefulWidget {
 
 class _FavoritePlacesPageState extends State<FavoritePlacesPage> {
   @override
+  void initState() {
+    super.initState();
+    context.read<PlaceBloc>().add(GetPlace());
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -71,7 +77,11 @@ class _FavoritePlacesPageState extends State<FavoritePlacesPage> {
                         latLng: LatLng(37.43296265331129, -122.08832357078792),
                       )));
         },
-        child: Icon(Icons.add),
+        child: Icon(
+          Icons.add,
+          color: Color(0xfff0a6ca),
+        ),
+        backgroundColor: Color(0xff2d232e),
       ),
     );
   }

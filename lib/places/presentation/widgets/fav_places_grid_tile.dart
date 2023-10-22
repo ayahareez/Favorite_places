@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:favorite_places/places/data/models/place_model.dart';
+import 'package:favorite_places/places/presentation/pages/fav_places_info.dart';
 import 'package:favorite_places/places/presentation/pages/new_place_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -18,28 +19,27 @@ class FavoritePlacesGridTile extends StatelessWidget {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => NewPlacePage(
-                        latLng: LatLng(37.43296265331129, -122.08832357078792),
-                      )));
+                  builder: (context) =>
+                      FavPlacesInfoPage(placeModel: placeModel)));
         },
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: [
-              CircleAvatar(
-                backgroundImage: FileImage(File(placeModel.image)),
-                radius: 35,
-              ),
-              SizedBox(
-                width: 16,
-              ),
-              Column(
+        child: Row(
+          children: [
+            CircleAvatar(
+              backgroundImage: FileImage(File(placeModel.image)),
+              radius: 35,
+            ),
+            SizedBox(
+              width: 16,
+            ),
+            Expanded(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
                     placeModel.placeName,
                     style: TextStyle(
+                        color: Color(0xff2d232e),
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                         fontFamily: 'UbuntuCondensed-Regular'),
@@ -47,14 +47,17 @@ class FavoritePlacesGridTile extends StatelessWidget {
                   Text(
                     '${placeModel.location.join()}',
                     style: TextStyle(
+                      color: Color(0xfff0a6ca),
                       fontSize: 16,
                       fontFamily: 'UbuntuCondensed-Regular',
                     ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   )
                 ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

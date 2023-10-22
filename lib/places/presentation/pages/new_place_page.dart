@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:favorite_places/places/data/models/place_model.dart';
 import 'package:favorite_places/places/presentation/bloc/place_bloc.dart';
 import 'package:favorite_places/places/presentation/pages/fav_places_page.dart';
-import 'package:favorite_places/places/presentation/pages/test.dart';
+import 'package:favorite_places/places/presentation/pages/map_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoding/geocoding.dart';
@@ -52,7 +52,10 @@ class _NewPlacePageState extends State<NewPlacePage> {
                     controller: title,
                     decoration: InputDecoration(
                         labelText: 'Title',
-                        labelStyle: TextStyle(color: Color(0xfffb6f92))),
+                        labelStyle: TextStyle(
+                            color: Color(0xfffb6f92),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18)),
                     validator: (value) {
                       if (value!.isEmpty) return 'Name Must Be Enered';
                     },
@@ -75,7 +78,13 @@ class _NewPlacePageState extends State<NewPlacePage> {
                                   flag = true;
                                 });
                               },
-                              child: Text('Take Photo'))),
+                              child: Text(
+                                'Take Photo',
+                                style: TextStyle(
+                                    color: Color(0xff2d232e),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 22),
+                              ))),
                   SizedBox(
                     height: 16,
                   ),
@@ -110,7 +119,7 @@ class _NewPlacePageState extends State<NewPlacePage> {
                                 },
                                 child: Text(
                                   'Get Current Location',
-                                  style: TextStyle(color: Color(0xfffb6f92)),
+                                  style: TextStyle(color: Color(0xff2d232e)),
                                 ))
                           ],
                         ),
@@ -132,7 +141,7 @@ class _NewPlacePageState extends State<NewPlacePage> {
                                 },
                                 child: Text(
                                   'Select On map ',
-                                  style: TextStyle(color: Color(0xfffb6f92)),
+                                  style: TextStyle(color: Color(0xff2d232e)),
                                 )),
                           ],
                         ),
@@ -165,7 +174,7 @@ class _NewPlacePageState extends State<NewPlacePage> {
                       ],
                     ),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xff4a4e69),
+                      backgroundColor: Color(0xff2d232e),
                     ),
                   )
                 ],
