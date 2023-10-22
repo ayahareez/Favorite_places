@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:favorite_places/places/presentation/bloc/place_bloc.dart';
 import 'package:favorite_places/places/presentation/pages/new_place_page.dart';
 import 'package:favorite_places/places/presentation/pages/map_page.dart';
@@ -10,10 +11,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 void main() {
-  runApp(MultiBlocProvider(providers: [
-    BlocProvider(create: (_) => UserBloc()),
-    BlocProvider(create: (_) => PlaceBloc())
-  ], child: MyApp()));
+  runApp(MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => UserBloc()),
+        BlocProvider(create: (_) => PlaceBloc())
+      ],
+      child: EasyLocalization(
+          supportedLocales: [Locale('en'), Locale('ar')],
+          path: 'assets/translations',
+          fallbackLocale: Locale('en', 'ar'),
+          startLocale: Locale('ar'),
+          child: MyApp())));
 }
 
 class MyApp extends StatefulWidget {
@@ -28,7 +36,9 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
+        localizationsDelegates: context.localizationDelegates,
+        supportedLocales: context.supportedLocales,
+        locale: context.locale,
         theme: ThemeData(
           textTheme: TextTheme(
             bodyLarge: TextStyle(color: Color(0xffedede9)),

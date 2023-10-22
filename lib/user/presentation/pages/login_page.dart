@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:favorite_places/places/presentation/pages/fav_places_page.dart';
 import 'package:favorite_places/user/presentation/pages/signup_page.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +27,7 @@ class LoginPage extends StatelessWidget {
                 child: Form(
                   key: formKey,
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
                         'Login',
@@ -99,7 +100,7 @@ class LoginPage extends StatelessWidget {
                             }
                           },
                           child: Text(
-                            'LOGIN',
+                            tr('login'),
                             style: TextStyle(color: Colors.white, fontSize: 18),
                           ),
                           style: ElevatedButton.styleFrom(
