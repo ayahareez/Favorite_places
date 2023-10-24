@@ -5,13 +5,9 @@ abstract class UserState {}
 
 class UserUnauthorized extends UserState {}
 
-class UserLoadingState extends UserState {}
+class UserLoadingState extends UserState {} //طالما في Future
 
-class UserAuthorizedState extends UserState {
-  final UserModel userModel;
-
-  UserAuthorizedState({required this.userModel});
-}
+class UserAuthorizedState extends UserState {}
 
 class UserErrorState extends UserState {
   final String error;

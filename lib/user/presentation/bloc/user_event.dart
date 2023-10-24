@@ -3,12 +3,16 @@ part of 'user_bloc.dart';
 @immutable
 abstract class UserEvent {}
 
-class SetUserData extends UserEvent {
+class SignIn extends UserEvent {
   final UserModel userModel;
-
-  SetUserData({required this.userModel});
+  SignIn({required this.userModel});
 }
 
-class HasSignedUp extends UserEvent {}
+class SignUp extends UserEvent {
+  final UserModel userModel;
+  SignUp({required this.userModel});
+}
 
-class LogOut extends UserEvent {}
+class SignOut extends UserEvent {}
+
+class CheckIfAuth extends UserEvent {}

@@ -35,13 +35,13 @@ class MapSampleState extends State<MapSample> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Pick Your Location'),
+        title: const Text('Pick Your Location'),
         actions: [
           IconButton(
               onPressed: () {
                 Navigator.pop(context, latLngg);
               },
-              icon: Icon(Icons.save))
+              icon: const Icon(Icons.save))
         ],
       ),
       body: Stack(
@@ -57,7 +57,7 @@ class MapSampleState extends State<MapSample> {
                 markers.clear(); // Clear previous markers
                 markers.add(
                   Marker(
-                    markerId: MarkerId('1'),
+                    markerId: const MarkerId('1'),
                     position: latLng,
                   ),
                 );
@@ -78,7 +78,9 @@ class MapSampleState extends State<MapSample> {
             onPressed: () {
               Navigator.pop(context, latLngg);
             },
-            child: Row(
+            style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xff2d232e)),
+            child: const Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(
@@ -91,7 +93,6 @@ class MapSampleState extends State<MapSample> {
                 ),
               ],
             ),
-            style: ElevatedButton.styleFrom(backgroundColor: Color(0xff2d232e)),
           )
         ],
       ),

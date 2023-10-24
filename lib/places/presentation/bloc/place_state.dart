@@ -11,3 +11,9 @@ class PlaceLoaded extends PlaceState {
   final List<PlaceModel> places;
   PlaceLoaded({required this.places});
 }
+
+class PlaceError extends PlaceState {
+  final String error;
+
+  PlaceError({required this.error});
+}

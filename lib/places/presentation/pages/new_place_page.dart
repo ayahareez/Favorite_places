@@ -12,7 +12,6 @@ import 'package:image_picker/image_picker.dart';
 
 //UbuntuCondensed-Regular
 class NewPlacePage extends StatefulWidget {
-
   const NewPlacePage({super.key});
   @override
   State<NewPlacePage> createState() => _NewPlacePageState();
@@ -29,7 +28,7 @@ class _NewPlacePageState extends State<NewPlacePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Add New Place',
           style: TextStyle(
               fontWeight: FontWeight.bold,
@@ -41,7 +40,7 @@ class _NewPlacePageState extends State<NewPlacePage> {
           builder: (BuildContext context, BoxConstraints constraints) {
         return Container(
           width: double.infinity,
-          padding: EdgeInsetsDirectional.all(16),
+          padding: const EdgeInsetsDirectional.all(16),
           child: SingleChildScrollView(
             child: Form(
               key: fromKey,
@@ -49,7 +48,7 @@ class _NewPlacePageState extends State<NewPlacePage> {
                 children: [
                   TextFormField(
                     controller: title,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                         labelText: 'Title',
                         labelStyle: TextStyle(
                             color: Color(0xfffb6f92),
@@ -59,7 +58,7 @@ class _NewPlacePageState extends State<NewPlacePage> {
                       if (value!.isEmpty) return 'Name Must Be Enered';
                     },
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 32,
                   ),
                   Container(
@@ -77,14 +76,14 @@ class _NewPlacePageState extends State<NewPlacePage> {
                                   flag = true;
                                 });
                               },
-                              child: Text(
+                              child: const Text(
                                 'Take Photo',
                                 style: TextStyle(
                                     color: Color(0xff2d232e),
                                     fontWeight: FontWeight.bold,
                                     fontSize: 22),
                               ))),
-                  SizedBox(
+                  const SizedBox(
                     height: 16,
                   ),
                   SizedBox(
@@ -100,7 +99,7 @@ class _NewPlacePageState extends State<NewPlacePage> {
                       Expanded(
                         child: Row(
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.location_on_rounded,
                               color: Color(0xfff0a6ca),
                             ),
@@ -116,7 +115,7 @@ class _NewPlacePageState extends State<NewPlacePage> {
                                       latitude, longitude);
                                   print(placemarks);
                                 },
-                                child: Text(
+                                child: const Text(
                                   'Get Current Location',
                                   style: TextStyle(color: Color(0xff2d232e)),
                                 ))
@@ -126,18 +125,19 @@ class _NewPlacePageState extends State<NewPlacePage> {
                       Expanded(
                         child: Row(
                           children: [
-                            Icon(Icons.map, color: Color(0xfff0a6ca)),
+                            const Icon(Icons.map, color: Color(0xfff0a6ca)),
                             TextButton(
                                 onPressed: () async {
-                                  print(placemarks);
                                   LatLng latLong = await Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => MapSample()));
+                                          builder: (context) =>
+                                              const MapSample()));
                                   placemarks = await placemarkFromCoordinates(
                                       latLong.latitude, latLong.longitude);
+                                  print(placemarks);
                                 },
-                                child: Text(
+                                child: const Text(
                                   'Select On map ',
                                   style: TextStyle(color: Color(0xff2d232e)),
                                 )),
@@ -152,15 +152,20 @@ class _NewPlacePageState extends State<NewPlacePage> {
                           location: placemarks,
                           placeName: title.text,
                           image: imageFile!.path);
+                      print(placeModel);
                       context
                           .read<PlaceBloc>()
                           .add(SetPlace(placeModel: placeModel));
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => FavoritePlacesPage()));
+                              builder: (context) =>
+                                  const FavoritePlacesPage()));
                     },
-                    child: Row(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xff2d232e),
+                    ),
+                    child: const Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(Icons.add, size: 18, color: Color(0xfff0a6ca)),
@@ -170,9 +175,6 @@ class _NewPlacePageState extends State<NewPlacePage> {
                               TextStyle(color: Color(0xfff0a6ca), fontSize: 18),
                         ),
                       ],
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xff2d232e),
                     ),
                   )
                 ],

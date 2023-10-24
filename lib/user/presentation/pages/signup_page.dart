@@ -1,6 +1,7 @@
 import 'package:favorite_places/places/presentation/pages/fav_places_page.dart';
 import 'package:favorite_places/user/data/models/user_model.dart';
 import 'package:favorite_places/user/presentation/bloc/user_bloc.dart';
+import 'package:favorite_places/user/presentation/pages/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -15,7 +16,7 @@ class SignUpPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Sign Up',
           style: TextStyle(
             fontSize: 22,
@@ -31,20 +32,20 @@ class SignUpPage extends StatelessWidget {
               key: formkey,
               child: Column(
                 children: [
-                  Text(
+                  const Text(
                     'welcome',
                     style: TextStyle(
                       fontSize: 40.0,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 32,
                   ),
                   TextFormField(
                     controller: name,
                     keyboardType: TextInputType.emailAddress,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'Name',
                       labelStyle: TextStyle(color: Color(0xfffb6f92)),
                       border: OutlineInputBorder(),
@@ -58,13 +59,13 @@ class SignUpPage extends StatelessWidget {
                       }
                     },
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 16,
                   ),
                   TextFormField(
                     controller: email,
                     keyboardType: TextInputType.emailAddress,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'Email',
                       labelStyle: TextStyle(color: Color(0xfffb6f92)),
                       border: OutlineInputBorder(),
@@ -78,14 +79,14 @@ class SignUpPage extends StatelessWidget {
                       }
                     },
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 16,
                   ),
                   TextFormField(
                     controller: password,
                     keyboardType: TextInputType.emailAddress,
                     obscureText: true,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'Password',
                       labelStyle: TextStyle(color: Color(0xfffb6f92)),
                       border: OutlineInputBorder(),
@@ -99,46 +100,50 @@ class SignUpPage extends StatelessWidget {
                       }
                     },
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 32,
                   ),
-                  Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Color(0xfffb6f92),
-                    ),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        if (formkey.currentState!.validate()) {
-                          UserModel userModel = UserModel(
-                              password: password.text,
-                              email: email.text,
-                              name: name.text);
-                          context
-                              .read<UserBloc>()
-                              .add(SetUserData(userModel: userModel));
+                  ElevatedButton(
+                    onPressed: () {
+                      if (formkey.currentState!.validate()) {
+                        UserModel userModel = UserModel(
+                          password: password.text,
+                          email: email.text,
+                        );
+                        context
+                            .read<UserBloc>()
+                            .add(SignUp(userModel: userModel));
 
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => FavoritePlacesPage()));
-                        }
-                      },
-                      child: Text(
-                        'Sign Up',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontFamily: 'UbuntuCondensed-Regular',
-                        ),
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const FavoritePlacesPage()));
+                      }
+                    },
+                    child: const Text(
+                      'Sign Up',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontFamily: 'UbuntuCondensed-Regular',
                       ),
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xfffb6f92)),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xfffb6f92),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 32,
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (_) => LoginPage()));
+                    },
+                    child: const Text('login',
+                        style:
+                            TextStyle(fontSize: 24, color: Color(0xfffb6f92))),
                   ),
                 ],
               ),

@@ -9,17 +9,22 @@ part 'place_event.dart';
 part 'place_state.dart';
 
 class PlaceBloc extends Bloc<PlaceEvent, PlaceState> {
-  PlaceBloc() : super(PlaceInitial()) {
+  PlaceLocalDs placeLocalDs;
+  PlaceBloc(this.placeLocalDs) : super(PlaceInitial()) {
     on<PlaceEvent>((event, emit) async {
-      if(event is SetPlace){
-        emit(PlaceLoading());
-        await PlaceLocalDsImpl().setPLace(event.placeModel);
-        List<PlaceModel> places=await PlaceLocalDsImpl().getPlaces();
-        emit(PlaceLoaded(places: places));
+      try {
+        if (event is SetPlace) {
+          emit(PlaceLoading());
+          await placeLocalDs.setPLace(event.placeModel);
+          List<PlaceModel> places = await PlaceLocalDsImpl().getPlaces();
+          emit(PlaceLoaded(places: places));
+        }
+      } catch (e) {
+        emit(PlaceError(error: 'failed'));
       }
-      if(event is GetPlace){
+      if (event is GetPlace) {
         emit(PlaceLoading());
-        List<PlaceModel> places=await PlaceLocalDsImpl().getPlaces();
+        List<PlaceModel> places = await placeLocalDs.getPlaces();
         emit(PlaceLoaded(places: places));
       }
     });

@@ -2,7 +2,9 @@ import 'package:favorite_places/places/presentation/bloc/place_bloc.dart';
 import 'package:favorite_places/places/presentation/pages/new_place_page.dart';
 import 'package:favorite_places/places/presentation/widgets/fav_places_grid_tile.dart';
 import 'package:favorite_places/user/presentation/bloc/user_bloc.dart';
+import 'package:favorite_places/user/presentation/pages/login_page.dart';
 import 'package:favorite_places/user/presentation/pages/signup_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -35,17 +37,17 @@ class _FavoritePlacesPageState extends State<FavoritePlacesPage> {
         actions: [
           IconButton(
               onPressed: () {
-                context.read<UserBloc>().add(LogOut());
+                context.read<UserBloc>().add(SignOut());
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => SignUpPage()));
+                    MaterialPageRoute(builder: (context) => LoginPage()));
               },
-              icon: Icon(Icons.logout))
+              icon: const Icon(Icons.logout))
         ],
       ),
       body: BlocBuilder<PlaceBloc, PlaceState>(
         builder: (context, state) {
           if (state is PlaceLoading) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
           if (state is PlaceLoaded) {
             return Column(
@@ -61,7 +63,7 @@ class _FavoritePlacesPageState extends State<FavoritePlacesPage> {
               ],
             );
           }
-          return Center(
+          return const Center(
               child: Text(
             'searching',
             style: TextStyle(color: Colors.white, fontSize: 22),
@@ -70,14 +72,14 @@ class _FavoritePlacesPageState extends State<FavoritePlacesPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => NewPlacePage()));
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const NewPlacePage()));
         },
-        child: Icon(
+        child: const Icon(
           Icons.add,
           color: Color(0xfff0a6ca),
         ),
-        backgroundColor: Color(0xff2d232e),
+        backgroundColor: const Color(0xff2d232e),
       ),
     );
   }

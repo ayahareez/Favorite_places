@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:favorite_places/user/data/data_source/sign_up_local_ds.dart';
 import 'package:favorite_places/user/data/models/user_model.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:meta/meta.dart';
 
@@ -11,37 +13,41 @@ part 'user_event.dart';
 part 'user_state.dart';
 
 class UserBloc extends Bloc<UserEvent, UserState> {
-  UserBloc() : super(UserUnauthorized()) {
+  AuthinticationRemoteDs authinticationRemoteDs;
+
+  UserBloc(this.authinticationRemoteDs) : super(UserUnauthorized()) {
     on<UserEvent>((event, emit) async {
-      if (event is SetUserData) {
-        try {
+      try {
+        if (event is SignUp) {
           emit(UserLoadingState());
-          await UserLocalDsImpl().setUser(event.userModel);
-          UserModel userModel = await UserLocalDsImpl().getUser();
-          emit(UserAuthorizedState(userModel: userModel));
-        } catch (e) {
-          // Handle the exception here
-          emit(UserErrorState(error: 'Failed to set user data.'));
-        }
-      }
-      if (event is HasSignedUp) {
-        try {
-          final isSigned = await UserLocalDsImpl().hasSignedUp();
-          print(isSigned);
-          if (isSigned) {
-            final UserModel userModel = await UserLocalDsImpl().getUser();
-            emit(UserAuthorizedState(userModel: userModel));
+          await authinticationRemoteDs.signUp(event.userModel);
+          emit(UserAuthorizedState());
+        } else if (event is SignIn) {
+          emit(UserLoadingState());
+          await authinticationRemoteDs.signIn(event.userModel);
+          if (authinticationRemoteDs.checkIfAuth()) {
+            emit(UserAuthorizedState());
           } else {
             emit(UserUnauthorized());
           }
-        } catch (e) {
-          // Handle the exception here
-          emit(UserErrorState(error: 'Failed to get user data.'));
+        } else if (event is CheckIfAuth) {
+          emit(UserLoadingState());
+          final isSigned = authinticationRemoteDs.checkIfAuth();
+          // print(isSigned);
+          if (isSigned) {
+            emit(UserAuthorizedState());
+          } else {
+            emit(UserUnauthorized());
+          }
+        } else if (event is SignOut) {
+          emit(UserLoadingState());
+          await authinticationRemoteDs.signOut();
+          emit(UserUnauthorized());
         }
-      }
-      if (event is LogOut) {
-        await UserLocalDsImpl().logOut();
-        emit(UserUnauthorized());
+      } catch (e) {
+        // Handle the exception here
+        emit(UserErrorState(
+            error: 'please enter your Credentials correctly,or sign up '));
       }
     });
   }

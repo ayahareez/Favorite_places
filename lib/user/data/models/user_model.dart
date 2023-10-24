@@ -1,10 +1,10 @@
 class UserModel {
-  String email, password, name;
-  UserModel({required this.password, required this.email, required this.name});
+  String email, password;
+  UserModel({required this.password, required this.email});
 
-  Map<String, dynamic> toMap() =>
-      {'email': email, 'password': password, 'name': name};
-
-  factory UserModel.fromMap(Map<String, dynamic> map) =>
-      UserModel(email: map['email'], password: map['password'], name: '');
+  // Map<String, dynamic> toMap() =>
+  //     {'email': email, 'password': password};
+  //
+  // factory UserModel.fromMap(Map<String, dynamic> map) =>
+  //     UserModel(email: map['email'], password: map['password']);
 }
