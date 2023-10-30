@@ -1,13 +1,17 @@
 import 'dart:async';
 import 'dart:collection';
 
+import 'package:favorite_places/places/data/data_source/distance_matrix_remote_ds.dart';
+import 'package:favorite_places/places/data/models/distance_time_model.dart';
 import 'package:favorite_places/places/presentation/pages/new_place_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapSample extends StatefulWidget {
-  const MapSample({super.key});
+  final double latitude, longitude;
+  const MapSample({super.key, required this.latitude, required this.longitude});
 
   @override
   State<MapSample> createState() => MapSampleState();
@@ -15,24 +19,18 @@ class MapSample extends StatefulWidget {
 
 class MapSampleState extends State<MapSample> {
   var markers = HashSet<Marker>();
-  final Completer<GoogleMapController> _controller =
-      Completer<GoogleMapController>();
-  // var lat;
-  // var long;
   late LatLng latLngg;
-  static const CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
-    zoom: 14.4746,
-  );
-
-  static const CameraPosition _kLake = CameraPosition(
-      bearing: 192.8334901395799,
-      target: LatLng(37.43296265331129, -122.08832357078792),
-      tilt: 59.440717697143555,
-      zoom: 19.151926040649414);
+  Map<PolylineId, Polyline> polylines = {};
+  BitmapDescriptor customIcon =
+      BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueYellow);
+  late DistanceTimeModel distanceTimeModel =
+      DistanceTimeModel(distance: '', duration: '');
 
   @override
   Widget build(BuildContext context) {
+    markers.add(Marker(
+        markerId: const MarkerId('2'),
+        position: LatLng(widget.latitude, widget.longitude)));
     return Scaffold(
       appBar: AppBar(
         title: const Text('Pick Your Location'),
@@ -45,55 +43,106 @@ class MapSampleState extends State<MapSample> {
         ],
       ),
       body: Stack(
-        alignment: Alignment.bottomCenter,
+        //alignment: Alignment.bottomCenter,
         children: [
           GoogleMap(
             mapType: MapType.hybrid,
-            initialCameraPosition: _kGooglePlex,
-            onTap: (LatLng latLng) {
-              // Handle the tap event to get the latitude and longitude
+            initialCameraPosition: CameraPosition(
+              target: LatLng(widget.latitude, widget.longitude),
+              zoom: 10,
+            ),
+            onTap: (LatLng latLng) async {
               setState(() {
                 latLngg = latLng;
-                markers.clear(); // Clear previous markers
+                markers.clear;
+                // markers.add(Marker(
+                //     markerId: const MarkerId('2'),
+                //     position: LatLng(widget.latitude, widget.longitude)));
                 markers.add(
                   Marker(
-                    markerId: const MarkerId('1'),
-                    position: latLng,
-                  ),
+                      markerId: const MarkerId('1'),
+                      position: latLng,
+                      icon: customIcon),
                 );
               });
-              print(
-                  "Latitude: ${latLng.latitude}, Longitude: ${latLng.latitude}");
+              distanceTimeModel = await DistanceRemoteDsImpl().getDistanceTime(
+                  '${widget.latitude},${widget.longitude}',
+                  '${latLng.latitude},${latLng.longitude}');
+
+              PolylinePoints polylinePoints = PolylinePoints();
+
+              LatLng startPoint = LatLng(widget.latitude, widget.longitude);
+              LatLng endPoint = LatLng(latLngg.latitude, latLngg.longitude);
+
+              PolylineResult result =
+                  await polylinePoints.getRouteBetweenCoordinates(
+                'AIzaSyDi-bSYjtEknQ7O7V05Hg7oWRLWPnU0rXU',
+                PointLatLng(startPoint.latitude, startPoint.longitude),
+                PointLatLng(endPoint.latitude, endPoint.longitude),
+              );
+
+              if (result.status == 'OK') {
+                List<PointLatLng> polylineCoordinates = result.points;
+
+                // Create a Polyline and add it to the map
+                Polyline polyline = Polyline(
+                  polylineId: PolylineId('polyline_id'),
+                  color: Colors.red, // Color of the polyline
+                  points: polylineCoordinates
+                      .map((point) => LatLng(point.latitude, point.longitude))
+                      .toList(),
+                );
+
+                // Update the state to include the polyline
+                setState(() {
+                  polylines[PolylineId('polyline_id')] = polyline;
+                });
+              }
             },
-            // onMapCreated: (GoogleMapController controller) {
-            // setState(() {
-            //   markers.add(Marker(
-            //       markerId: MarkerId('1'),
-            //       position: LatLng(latLngg.latitude, latLngg.longitude)));
-            // });
-            // },
             markers: markers,
+            polylines: Set<Polyline>.from(polylines.values),
           ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context, latLngg);
-            },
-            style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xff2d232e)),
-            child: const Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.save,
-                  color: Color(0xfff0a6ca),
-                ),
-                Text(
-                  'save',
-                  style: TextStyle(color: Color(0xfff0a6ca), fontSize: 16),
-                ),
-              ],
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.pop(
+                  context,
+                  latLngg,
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xff2d232e)),
+              child: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.save,
+                    color: Color(0xfff0a6ca),
+                  ),
+                  Text(
+                    'save',
+                    style: TextStyle(color: Color(0xfff0a6ca), fontSize: 16),
+                  ),
+                ],
+              ),
             ),
-          )
+          ),
+          Align(
+            alignment: Alignment.topCenter,
+            child: Container(
+              padding: EdgeInsets.all(8),
+              color: Colors.white.withOpacity(0.5),
+              child: Text(
+                '${distanceTimeModel.distance}, ${distanceTimeModel.duration}',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.red[800],
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );

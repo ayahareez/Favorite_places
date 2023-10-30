@@ -1,13 +1,17 @@
 import 'dart:io';
+import 'package:favorite_places/places/data/data_source/place_remote_ds.dart';
 import 'package:favorite_places/places/data/models/place_model.dart';
 import 'package:favorite_places/places/presentation/bloc/place_bloc.dart';
 import 'package:favorite_places/places/presentation/pages/fav_places_page.dart';
 import 'package:favorite_places/places/presentation/pages/map_page.dart';
+import 'package:favorite_places/user/data/data_source/sign_up_remote_ds.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_static_maps_controller/google_static_maps_controller.dart'
+    as gmaps;
 import 'package:image_picker/image_picker.dart';
 
 //UbuntuCondensed-Regular
@@ -18,14 +22,35 @@ class NewPlacePage extends StatefulWidget {
 }
 
 class _NewPlacePageState extends State<NewPlacePage> {
+  late ImageProvider image;
+
   bool flag = false;
   File? imageFile;
-  var currentLocation;
+  late Position currentLocation;
   List<Placemark> placemarks = [];
+  LatLng? latLng;
   TextEditingController title = TextEditingController();
   var fromKey = GlobalKey<FormState>();
+  String userId = '';
+  var current;
+  @override
+  initState() {
+    super.initState();
+    userId = AuthinticationRemoteDsImpl().getUserId();
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (latLng != null) {
+      var _controller = gmaps.StaticMapController(
+        googleApiKey: "AIzaSyDi-bSYjtEknQ7O7V05Hg7oWRLWPnU0rXU",
+        width: 400,
+        height: 400,
+        zoom: 10,
+        center: gmaps.Location(latLng!.latitude, latLng!.longitude),
+      );
+      image = _controller.image;
+    }
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -55,7 +80,7 @@ class _NewPlacePageState extends State<NewPlacePage> {
                             fontWeight: FontWeight.bold,
                             fontSize: 18)),
                     validator: (value) {
-                      if (value!.isEmpty) return 'Name Must Be Enered';
+                      if (value!.isEmpty) return 'Name Must Be Entered';
                     },
                   ),
                   const SizedBox(
@@ -63,7 +88,7 @@ class _NewPlacePageState extends State<NewPlacePage> {
                   ),
                   Container(
                       width: constraints.maxWidth / 1.1,
-                      height: constraints.maxWidth / 1.3,
+                      height: constraints.maxWidth / 1.8,
                       child: flag
                           ? Image.file(
                               File(imageFile!.path),
@@ -87,75 +112,119 @@ class _NewPlacePageState extends State<NewPlacePage> {
                     height: 16,
                   ),
                   SizedBox(
-                    height: 180,
-                    child: Image.network(
-                      'https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&q=60&w=500&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8bWFwfGVufDB8fDB8fHww',
+                    height: 200,
+                    child: Image(
+                      image: latLng != null
+                          ? image
+                          : NetworkImage(
+                              'https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&q=60&w=500&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8bWFwfGVufDB8fDB8fHww'),
                       width: constraints.maxWidth,
                       fit: BoxFit.cover,
                     ),
                   ),
                   Row(
                     children: [
-                      Expanded(
-                        child: Row(
-                          children: [
-                            const Icon(
-                              Icons.location_on_rounded,
-                              color: Color(0xfff0a6ca),
-                            ),
-                            TextButton(
-                                onPressed: () async {
-                                  currentLocation = await getCurrentPosition();
-                                  print(currentLocation);
-                                  double latitude = currentLocation.latitude;
-                                  double longitude = currentLocation.longitude;
-                                  print(longitude);
-                                  print(latitude);
-                                  placemarks = await placemarkFromCoordinates(
-                                      latitude, longitude);
-                                  print(placemarks);
-                                },
-                                child: const Text(
-                                  'Get Current Location',
-                                  style: TextStyle(color: Color(0xff2d232e)),
-                                ))
-                          ],
-                        ),
+                      SizedBox(
+                        height: 100,
+                        child: TextButton(
+                            onPressed: () async {
+                              current = await getCurrentPosition();
+                              latLng = await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => MapSample(
+                                            latitude: current.latitude,
+                                            longitude: current.longitude,
+                                          )));
+                              placemarks = await placemarkFromCoordinates(
+                                  latLng!.latitude, latLng!.longitude);
+                              print(placemarks);
+                              setState(() {});
+                            },
+                            child: const Row(
+                              children: [
+                                Icon(Icons.map, color: Color(0xfff0a6ca)),
+                                Text(
+                                  'Select On Map ',
+                                  style: TextStyle(
+                                      color: Color(0xff2d232e), fontSize: 16),
+                                ),
+                              ],
+                            )),
                       ),
-                      Expanded(
-                        child: Row(
-                          children: [
-                            const Icon(Icons.map, color: Color(0xfff0a6ca)),
-                            TextButton(
-                                onPressed: () async {
-                                  LatLng latLong = await Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const MapSample()));
-                                  placemarks = await placemarkFromCoordinates(
-                                      latLong.latitude, latLong.longitude);
-                                  print(placemarks);
-                                },
-                                child: const Text(
-                                  'Select On map ',
-                                  style: TextStyle(color: Color(0xff2d232e)),
-                                )),
-                          ],
-                        ),
+                      SizedBox(
+                        height: 100,
+                        child: TextButton(
+                            onPressed: () async {
+                              currentLocation = await getCurrentPosition();
+                              print(currentLocation);
+                              latLng = LatLng(currentLocation.latitude,
+                                  currentLocation.longitude);
+                              double latitude = currentLocation.latitude;
+                              double longitude = currentLocation.longitude;
+                              print(longitude);
+                              print(latitude);
+                              placemarks = await placemarkFromCoordinates(
+                                  latitude, longitude);
+                              print(placemarks);
+                              setState(() {});
+                            },
+                            child: const Row(
+                              children: [
+                                Icon(
+                                  Icons.location_on_rounded,
+                                  color: Color(0xfff0a6ca),
+                                ),
+                                Text(
+                                  'Get Current Location',
+                                  style: TextStyle(
+                                      color: Color(0xff2d232e), fontSize: 16),
+                                ),
+                              ],
+                            )),
                       ),
                     ],
                   ),
+                  SizedBox(
+                    height: 16,
+                  ),
                   ElevatedButton(
-                    onPressed: () {
-                      PlaceModel placeModel = PlaceModel(
-                          location: placemarks,
+                    onPressed: () async {
+                      if (placemarks.isNotEmpty) {
+                        final place = placemarks.first;
+                        PlaceModel placeModel = PlaceModel(
+                          address: placemarks.map((placemark) {
+                            return {
+                              'name': placemark.name,
+                              'thoroughfare': placemark.thoroughfare,
+                              'subThoroughfare': placemark.subThoroughfare,
+                              'locality': placemark.locality,
+                              'subLocality': placemark.subLocality,
+                              'administrativeArea':
+                                  placemark.administrativeArea,
+                              'subAdministrativeArea':
+                                  placemark.subAdministrativeArea,
+                              'postalCode': placemark.postalCode,
+                              'country': placemark.country,
+                              'isoCountryCode': placemark.isoCountryCode,
+                              'street': placemark.street
+                            };
+                          }).toList(),
                           placeName: title.text,
-                          image: imageFile!.path);
-                      print(placeModel);
-                      context
-                          .read<PlaceBloc>()
-                          .add(SetPlace(placeModel: placeModel));
+                          imageUrl: imageFile!.path,
+                          id: '',
+                          userId: userId,
+                          longitude: latLng!.longitude,
+                          latitude: latLng!.latitude,
+                        );
+                        print(placeModel.longitude);
+                        print(placeModel.userId);
+                        context
+                            .read<PlaceBloc>()
+                            .add(SetPlace(placeModel: placeModel));
+                      }
+
+                      //print(await PlaceRemoteDsImpl().getAllPlaces());
                       Navigator.push(
                           context,
                           MaterialPageRoute(

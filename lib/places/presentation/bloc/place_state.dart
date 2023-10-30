@@ -3,17 +3,17 @@ part of 'place_bloc.dart';
 @immutable
 abstract class PlaceState {}
 
-class PlaceInitial extends PlaceState {}
+class PlaceInitialState extends PlaceState {}
 
-class PlaceLoading extends PlaceState {}
+class PlaceLoadingState extends PlaceState {}
 
-class PlaceLoaded extends PlaceState {
+class PlaceLoadedState extends PlaceState {
   final List<PlaceModel> places;
-  PlaceLoaded({required this.places});
+  PlaceLoadedState({required this.places});
 }
 
-class PlaceError extends PlaceState {
+class PlaceErrorState extends PlaceState {
   final String error;
 
-  PlaceError({required this.error});
+  PlaceErrorState({required this.error});
 }

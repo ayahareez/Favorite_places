@@ -1,13 +1,15 @@
 import 'package:favorite_places/places/presentation/bloc/place_bloc.dart';
 import 'package:favorite_places/places/presentation/pages/new_place_page.dart';
 import 'package:favorite_places/places/presentation/widgets/fav_places_grid_tile.dart';
-import 'package:favorite_places/user/presentation/bloc/user_bloc.dart';
+import 'package:favorite_places/user/presentation/bloc/auth_bloc.dart';
 import 'package:favorite_places/user/presentation/pages/login_page.dart';
 import 'package:favorite_places/user/presentation/pages/signup_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+import '../../../user/data/data_source/sign_up_remote_ds.dart';
 
 class FavoritePlacesPage extends StatefulWidget {
   const FavoritePlacesPage({super.key});
@@ -18,9 +20,11 @@ class FavoritePlacesPage extends StatefulWidget {
 
 class _FavoritePlacesPageState extends State<FavoritePlacesPage> {
   @override
+  String userId = '';
   void initState() {
     super.initState();
-    context.read<PlaceBloc>().add(GetPlace());
+    userId = AuthinticationRemoteDsImpl().getUserId();
+    context.read<PlaceBloc>().add(GetAllPlaces());
   }
 
   @override
@@ -37,7 +41,7 @@ class _FavoritePlacesPageState extends State<FavoritePlacesPage> {
         actions: [
           IconButton(
               onPressed: () {
-                context.read<UserBloc>().add(SignOut());
+                context.read<AuthBloc>().add(SignOut());
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => LoginPage()));
               },
@@ -46,18 +50,23 @@ class _FavoritePlacesPageState extends State<FavoritePlacesPage> {
       ),
       body: BlocBuilder<PlaceBloc, PlaceState>(
         builder: (context, state) {
-          if (state is PlaceLoading) {
+          if (state is PlaceLoadingState) {
             return const Center(child: CircularProgressIndicator());
           }
-          if (state is PlaceLoaded) {
+          if (state is PlaceLoadedState) {
             return Column(
               children: [
                 Expanded(
                   child: ListView.builder(
                     itemBuilder: (_, i) => FavoritePlacesGridTile(
-                      placeModel: state.places[i],
+                      placeModel: state.places
+                          .where((place) => place.userId == userId)
+                          .toList()[i],
                     ),
-                    itemCount: state.places.length,
+                    itemCount: state.places
+                        .where((place) => place.userId == userId)
+                        .toList()
+                        .length,
                   ),
                 ),
               ],

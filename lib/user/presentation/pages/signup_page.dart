@@ -1,6 +1,6 @@
 import 'package:favorite_places/places/presentation/pages/fav_places_page.dart';
 import 'package:favorite_places/user/data/models/user_model.dart';
-import 'package:favorite_places/user/presentation/bloc/user_bloc.dart';
+import 'package:favorite_places/user/presentation/bloc/auth_bloc.dart';
 import 'package:favorite_places/user/presentation/pages/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -106,12 +106,12 @@ class SignUpPage extends StatelessWidget {
                   ElevatedButton(
                     onPressed: () {
                       if (formkey.currentState!.validate()) {
-                        UserModel userModel = UserModel(
+                        AuthModel userModel = AuthModel(
                           password: password.text,
                           email: email.text,
                         );
                         context
-                            .read<UserBloc>()
+                            .read<AuthBloc>()
                             .add(SignUp(userModel: userModel));
 
                         Navigator.pushReplacement(

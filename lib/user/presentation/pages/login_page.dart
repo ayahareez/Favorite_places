@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-import '../bloc/user_bloc.dart';
+import '../bloc/auth_bloc.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({super.key});
@@ -17,6 +17,12 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  @override
+  void initState() {
+    context.read<AuthBloc>().add(CheckIfAuth());
+    super.initState();
+  }
+
   var email = TextEditingController();
 
   var password = TextEditingController();
@@ -25,7 +31,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocConsumer<UserBloc, UserState>(
+      body: BlocConsumer<AuthBloc, AuthState>(
         builder: (context, state) {
           print(state);
           if (state is UserLoadingState) {
@@ -98,10 +104,10 @@ class _LoginPageState extends State<LoginPage> {
                       ElevatedButton(
                         onPressed: () {
                           if (formKey.currentState!.validate()) {
-                            UserModel userModel = UserModel(
+                            AuthModel userModel = AuthModel(
                                 password: password.text, email: email.text);
                             context
-                                .read<UserBloc>()
+                                .read<AuthBloc>()
                                 .add(SignIn(userModel: userModel));
                           }
                         },
@@ -143,7 +149,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
           );
         },
-        listener: (BuildContext context, UserState state) {
+        listener: (BuildContext context, AuthState state) {
           if (state is UserAuthorizedState) {
             Navigator.pushReplacement(
                 context,

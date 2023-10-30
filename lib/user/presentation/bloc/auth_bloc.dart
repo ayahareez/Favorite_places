@@ -1,22 +1,22 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:favorite_places/user/data/data_source/sign_up_local_ds.dart';
+import 'package:favorite_places/user/data/data_source/sign_up_remote_ds.dart';
 import 'package:favorite_places/user/data/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:meta/meta.dart';
 
-part 'user_event.dart';
+part 'auth_event.dart';
 
-part 'user_state.dart';
+part 'auth_state.dart';
 
-class UserBloc extends Bloc<UserEvent, UserState> {
+class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthinticationRemoteDs authinticationRemoteDs;
 
-  UserBloc(this.authinticationRemoteDs) : super(UserUnauthorized()) {
-    on<UserEvent>((event, emit) async {
+  AuthBloc(this.authinticationRemoteDs) : super(UserUnauthorized()) {
+    on<AuthEvent>((event, emit) async {
       try {
         if (event is SignUp) {
           emit(UserLoadingState());
